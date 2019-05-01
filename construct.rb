@@ -1,17 +1,18 @@
 class ConStruct
-  def initialize(*args)
-    @args = args
-  end
+  # def initialize(*args)
+  #   @args = args
+  # end
 
   class << self
-    def new(args)
+    def new(*args)
+      const_set ARGS, args
       Class.new do
         def initialize(*attrs)
-          arguments = "(given #{attrs.size}, expected #{args.size})"
+          arguments = "(given #{attrs.size}, expected #{ARGS.size})"
           error_message = "wrong number of arguments #{arguments}"
-          raise ArgumentError, error_message if attrs.size != @args.size
+          raise ArgumentError, error_message if attrs.size != ARGS.size
 
-          args.each_with_index do |arg, i|
+          ARGS.each_with_index do |arg, i|
             instance_variable_set "@#{arg}", attrs[i]
             send attr_reader, "@#{arg}"
             send attr_accessor, "@#{arg}"
@@ -33,3 +34,5 @@ class ConStruct
 
 
 end
+
+# Some = ConStruct.new(:method, 'test')
